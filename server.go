@@ -12,6 +12,8 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/ettory-automation/cv-manager/generated"
 	"github.com/ettory-automation/cv-manager/resolvers"
+	"github.com/go-chi/chi"
+	"github.com/go-chi/cors"
 	"github.com/vektah/gqlparser/v2/ast"
 )
 
@@ -22,6 +24,17 @@ func main() {
 	if port == "" {
 		port = defaultPort
 	}
+
+	router := chi.NewRouter()
+	router.Use(
+		cors.Handler(
+			cors.Options{
+				AllowedOrigins:   []string{"*"},
+				AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodOptions},
+				AllowCredentials: true,
+			},
+		),
+	)
 
 	srv := handler.New(generated.NewExecutableSchema(generated.Config{Resolvers: &resolvers.Resolver{}}))
 
@@ -36,9 +49,9 @@ func main() {
 		Cache: lru.New[string](100),
 	})
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	router.Handle("/query", srv)
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Fatal(http.ListenAndServe("0.0.0.0:"+port, router))
 }

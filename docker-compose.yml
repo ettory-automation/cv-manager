@@ -9,6 +9,27 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=pass
     volumes:
       - mongodb_data:/data/db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--username", "root", "--password", "pass", "--eval", "db.adminCommand('ping')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  cv-manager:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cv-manager-api
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_URL=mongodb://root:pass@mongodb:27017
+      - DB_NAME=cv-manager
+      - PORT=8080
+    depends_on:
+      - mongodb
 
 volumes:
   mongodb_data:

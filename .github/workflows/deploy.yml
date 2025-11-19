@@ -1,0 +1,42 @@
+name: CI/CD Pipeline - CV Manager
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout SCM
+        uses: actions/checkout@v4
+      
+      - name: Install Docker Compose v2
+        run: |
+          echo "Docker environment is ready!"
+      
+      - name: Build and Deploy Containers (cv-manager & mongodb)
+        run: |
+          echo "Initializing build and deploy with Docker Compose..."
+          docker compose up -d --build
+      
+      - name: Wait for API Healthcheck
+        run: |
+          echo "Waiting API (http://localhost:8080/healthz) to respond..."
+
+          for i in {1..20}; do
+            if curl -fsS http://localhost:8080/healthz 2>/dev/null; then
+              echo "API is ready and healthy!"
+              exit 0
+            fi
+            echo "API is provisioning... ($i/20)"
+            sleep 2
+          done
+
+          echo "API did not respond in time! Deploy failed."
+          exit 1
+      
+      - name: Build Succeeded
+        run: echo "CI/CD pipeline finished successfully!"

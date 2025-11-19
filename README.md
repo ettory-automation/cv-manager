@@ -3,6 +3,7 @@
   <img alt="Docker" height="60" width="80" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original.svg" style="margin: 0 15px;">
   <img alt="MongoDB" height="60" width="80" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original-wordmark.svg" style="margin: 0 15px;">
   <img alt="GraphQL" height="60" width="80" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/graphql/graphql-plain-wordmark.svg" style="margin: 0 15px;">
+  <img alt="GraphQL" height="60" width="80" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/githubactions/githubactions-plain-wordmark.svg" style="margin: 0 15px;">
 </div>
 
 ---
